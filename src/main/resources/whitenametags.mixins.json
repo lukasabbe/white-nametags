@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.lukasabbe.whitenametags.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+  ],
+  "client": [
+    "PlayerNameTagMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
