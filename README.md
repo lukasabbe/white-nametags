@@ -1,4 +1,8 @@
 # White Nametags
-Exatly like in the picture below
+Changes all nametags to white text and no background
 
-![Example](./images/2024-08-01_21.07.47.png)
+Example bellow
+
+![Example](https://cdn.modrinth.com/data/cached_images/2a99fea9be4ee5f74e0a653aa52db0c8c00d7367.png)
+
+# Mod idea by @Wvzq
