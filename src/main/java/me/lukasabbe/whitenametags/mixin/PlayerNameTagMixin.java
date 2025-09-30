@@ -1,18 +1,32 @@
 package me.lukasabbe.whitenametags.mixin;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.entity.EntityRenderer;
+import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.client.render.LightmapTextureManager;
+import net.minecraft.client.render.command.LabelCommandRenderer;
+import net.minecraft.client.render.command.OrderedRenderCommandQueueImpl;
+import net.minecraft.client.render.state.CameraRenderState;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(EntityRenderer.class)
+import java.util.List;
+
+@Mixin(targets = "net/minecraft/client/render/command/LabelCommandRenderer$Commands")
 public class PlayerNameTagMixin {
-    @Redirect(method = "renderLabelIfPresent", at= @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Lnet/minecraft/text/Text;FFIZLorg/joml/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/client/font/TextRenderer$TextLayerType;II)V"))
-    private void injected(TextRenderer instance, Text text, float x, float y, int color, boolean shadow, Matrix4f matrix, VertexConsumerProvider vertexConsumers, TextRenderer.TextLayerType layerType, int backgroundColor, int light){
-        instance.draw(text,x,y,0xFFFFFFFF,true,matrix,vertexConsumers, TextRenderer.TextLayerType.NORMAL,0x00FFFFFF,light);
+    @Shadow @Final
+    List<OrderedRenderCommandQueueImpl.LabelCommand> normalLabels;
+
+    @Inject(method = "add", at= @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z", shift = At.Shift.BEFORE), cancellable = true)
+    public void injected(MatrixStack matrices, Vec3d pos, int y, Text label, boolean notSneaking, int light, double squaredDistanceToCamera, CameraRenderState cameraState, CallbackInfo ci, @Local float f, @Local(ordinal = 2) int k, @Local Matrix4f matrix4f){
+        this.normalLabels.add(new OrderedRenderCommandQueueImpl.LabelCommand(matrix4f, f, (float)y, label, LightmapTextureManager.applyEmission(light, 2), 0xFFFFFFFF, 0, squaredDistanceToCamera));
+        matrices.pop();
+        ci.cancel();
     }
 }
