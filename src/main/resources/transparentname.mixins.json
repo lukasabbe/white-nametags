@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "com.lukasabbe.transparentname.mixin",
+  "compatibilityLevel": "${java}",
+  "mixins": [
+    "GameRendererMixin",
+    "PlayerNameTagMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": []
+}
